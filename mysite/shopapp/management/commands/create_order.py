@@ -3,6 +3,7 @@ from django.core.management import BaseCommand
 
 from shopapp.models import Order
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         self.stdout.write("Create order")
