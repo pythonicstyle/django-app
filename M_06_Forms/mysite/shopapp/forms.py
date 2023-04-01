@@ -17,11 +17,16 @@ class ProductForm(forms.ModelForm):
 
 
 class OrderForm(forms.ModelForm):
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
+    #     self.fields['products'].queryset = Product.objects.filter(price__lte=100)
     class Meta:
         model = Order
         fields = ["user", "products", "delivery_address", "promocode"]
         widgets = {
             "user": forms.TextInput(attrs={'class': 'form-input'}),
+            # TODO плохая идея, ведь user это внешний ключ на другую таблицу, его значение должно быть целочисленное, то
+            #  есть id записи в User
             # "products": forms.ModelChoiceField(queryset=Product.objects.all())
         }
 

@@ -67,7 +67,8 @@ def create_order(request: HttpRequest) -> HttpResponse:
             url = reverse("shopapp:orders_list")
             return redirect(url)
     else:
-        form = OrderForm(),
+        form = OrderForm(),  # TODO переменной form присвоен кортеж вида (<объект класса OrderForm>,) из-за чего
+                             #  изначальная страница создания заказа пуста - без формы. Уберите запятую после объекта формы
     context = {
         "form": form,
     }
