@@ -17,7 +17,8 @@ class Product(models.Model):
     archived = models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return f"Product(pk = {self.pk}, name = {self.name!r})"
+        # return f"Product(pk = {self.pk}, name = {self.name!r})"
+        return f"Product {self.name!r}"
 
 
 class Order(models.Model):
