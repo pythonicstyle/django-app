@@ -1,15 +1,20 @@
 from django import forms
-from django.core import validators
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 
 from .models import Product, Order
+
+
+class GroupForm(forms.ModelForm):
+    class Meta:
+        model = Group
+        fields = "name",
 
 
 class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields =["name", "price", "description", "discount"]
+        fields = ["name", "price", "description", "discount"]
         widgets = {
             "name": forms.TextInput(attrs={"class": "form-input"}),
             "description": forms.Textarea(attrs={"cols": 30, "rows": 5}),
@@ -32,3 +37,4 @@ class OrderForm(forms.ModelForm):
             "delivery_address": forms.Textarea(attrs={"cols": 30, "rows": 1}),
             "products": forms.CheckboxSelectMultiple(attrs={"input type": "checkbox"})
         }
+

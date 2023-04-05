@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.core import validators
+# from django.core import validators
 
 
 class Product(models.Model):
@@ -18,7 +18,7 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         # return f"Product(pk = {self.pk}, name = {self.name!r})"
-        return f"Product {self.name!r}"
+        return f"{self.name!r}"
 
 
 class Order(models.Model):
