@@ -14,11 +14,9 @@ class Command(BaseCommand):
 
         for product in products:
             order.products.add(product)
-
         order.save()
-
         self.stdout.write(
             self.style.SUCCESS(
-                f"Successfully added products {order.products.all()} to order {order}"
+               f"Successfully added products {order.products.all()} to order"
             )
         )
