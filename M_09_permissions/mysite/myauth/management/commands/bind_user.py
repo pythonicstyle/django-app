@@ -17,6 +17,9 @@ class Command(BaseCommand):
         permission_product_create = Permission.objects.get(
             codename="add_product"
         )
+        permission_product_change = Permission.objects.get(
+            codename="change_product"
+        )
 
         #  добавление разрешения в группу
         group.permissions.add(permission_profile)
@@ -27,6 +30,7 @@ class Command(BaseCommand):
         #  связать пользователя напрямую с разрешением
         user.user_permissions.add(permission_logentry)
         user.user_permissions.add(permission_product_create)
+        user.user_permissions.add(permission_product_change)
 
         group.save()
         user.save()
