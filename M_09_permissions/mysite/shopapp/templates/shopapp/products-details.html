@@ -13,14 +13,12 @@
         <div>Archived: {{ product.archived }}</div>
         <div>Created by: {{ product.created_by }}</div>
     </div>
-{#    {% if perms %}#}
-        <div>
-            <a href="{% url 'shopapp:product_update' pk=product.pk %}">Update product</a>
-        </div>
-        <div>
-            <a href="{% url 'shopapp:product_archive' pk=product.pk %}">Archive product</a>
-        </div>
-{#    {% endif %}#}
+    <div>
+        <a href="{% url 'shopapp:product_update' pk=product.pk %}">Update product</a>
+    </div>
+    <div>
+        <a href="{% url 'shopapp:product_archive' pk=product.pk %}">Archive product</a>
+    </div>
     <div>
         <a href="{% url 'shopapp:products_list' %}">Bach to products list</a>
     </div>

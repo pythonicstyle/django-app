@@ -54,11 +54,8 @@ class ProductsListView(ListView):
     queryset = Product.objects.filter(archived=False)
 
 
-class ProductCreateView(UserPassesTestMixin, CreateView):
-    def test_func(self):
-        return self.request.user.is_staff
-    # TODO в пункте 6 речь идет о наличии разрешения "shopapp.add_product", наличие которого удобнее проверить
-    #  миксином PermissionRequiredMixin
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+    permission_required = "shopapp.add_product"
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy("shopapp:products_list")
@@ -70,11 +67,7 @@ class ProductCreateView(UserPassesTestMixin, CreateView):
 
 class ProductUpdeteView(UserPassesTestMixin, UpdateView):
     def test_func(self):
-        return self.request.user.is_staff  # TODO суперюзер это is_superuser, а is_staff это "сотрудник"
-        # TODO кроме суперюзера редактировать может создатель (в ответе в ЛМС пояснил кто это) имеющий право на
-        #  редактирование, это можно проверить с помощью метода has_perm объекта пользователя. Также тут потребуется
-        #  доступ к объект текущего (редактируемого) товара, получите его с помощью self.get_object()
-    # permission_required = "change_product"
+        return self.request.user == self.get_object().created_by or self.request.user.is_superuser
     model = Product
     form_class = ProductForm
     template_name_suffix = "_update_form"
