@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>
-    {% block title %}
-      Base Title
-    {% endblock %}
-  </title>
+    <meta charset="UTF-8">
+    <title>
+      {% block title %}
+        Base Title
+      {% endblock %}
+    </title>
 </head>
 <body>
 
@@ -14,5 +14,14 @@
   Base body
 {% endblock %}
 
+
+<div>
+    {% now 'l' as current_weekday %}
+    Today is {{ current_weekday }}
+</div>
+<div>
+    {% now 'H:i' as current_time %}
+    Time is {{ current_time }}
+</div>
 </body>
 </html>
