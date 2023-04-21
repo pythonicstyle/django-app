@@ -1,20 +1,42 @@
 {% extends 'myauth/base.html' %}
 
 {% block title %}
-  About me
+    About me
 {% endblock %}
 
-
 {% block body %}
-  <h1>User info</h1>
-  {% if user.is_authenticated %}
-    <h2>Detail</h2>
-    <p>Username: {{ user.username }}</p>
-    <p>First name: {{ user.first_name }}</p>
-    <p>Last name: {{ user.last_name }}</p>
-    <p>Email: {{ user.email }}</p>
-    <p>Bio: {{ user.profile.bio }}</p>
-  {% else %}
-    <h2>User is anonymous</h2>
-  {% endif %}
+    <h1>Info about user #{{ user.pk }}</h1>
+    {% if user.is_authenticated %}
+
+        {% if user.profile.avatar %}
+            <img width="200" src="{{ user.profile.avatar.url }}" alt="{{ user.profile.avatar.name }}">
+        {% else %}
+            No avatar yet
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="file" name="avatar">
+            <button type="submit">Change avatar</button>
+        </form>
+        <h2>Details</h2>
+
+        <p>Username: {{ user.username }}</p>
+        <p>First name: {{ user.first_name }}</p>
+        <p>Last name: {{ user.last_name }}</p>
+        <p>Email: {% firstof user.email 'email is not specified' %}</p>
+        <p>Bio: {{ user.profile.bio }}</p>
+
+    {% else %}
+        <h2>Anonymous user</h2>
+    {% endif %}
+    <div>
+        <a href="{% url 'myauth:user-update' pk=user.pk %}">Edit profile #{{ user.pk }}</a>
+    </div>
+    <div>
+        <a href="{% url 'myauth:users_list' %}">Back to all users</a>
+    </div>
+    <div>
+        <a href="{% url 'myauth:logout' %}">Logout</a>
+    </div>
 {% endblock %}

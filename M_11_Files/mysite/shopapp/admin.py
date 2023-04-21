@@ -1,13 +1,17 @@
 from django.contrib import admin
 from django.db.models import QuerySet
 from django.http import HttpRequest
+from .models import Product, Order, ProductImage
 
-from .models import Product, Order
 from .admin_mixins import ExportAsCSVMixin
 
 
 class OrderInline(admin.TabularInline):
     model = Product.orders.through
+
+
+class ProductInline(admin.StackedInline):
+    model = ProductImage
 
 
 @admin.action(description="Archive products")
@@ -29,19 +33,22 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
     ]
     inlines = [
         OrderInline,
+        ProductInline,
     ]
-    # list_display = "pk", "name", "description", "price", "discount"
     list_display = "pk", "name", "description_short", "price", "discount", "archived"
     list_display_links = "pk", "name"
-    ordering = "-name", "pk"
-    search_fields = "name", "description"
+    ordering = "pk",
+    search_fields = "name", "description", "price"
     fieldsets = [
         (None, {
-           "fields": ("name", "description"),
+            "fields": ("name", "description"),
         }),
         ("Price options", {
             "fields": ("price", "discount"),
-            "classes": ("wide", "collapse"),
+            "classes": ("wide",),
+        }),
+        ("Images", {
+            "fields": ("preview",),
         }),
         ("Extra options", {
             "fields": ("archived",),
@@ -56,18 +63,14 @@ class ProductAdmin(admin.ModelAdmin, ExportAsCSVMixin):
         return obj.description[:48] + "..."
 
 
-# admin.site.register(Product, ProductAdmin)
-
-
-# class ProductInline(admin.TabularInline):
-class ProductInline(admin.StackedInline):
+class ProductInline(admin.TabularInline):
     model = Order.products.through
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [
-        ProductInline,
+        ProductInline
     ]
     list_display = "delivery_address", "promocode", "created_at", "user_verbose"
 
