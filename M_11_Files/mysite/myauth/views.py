@@ -12,8 +12,11 @@ from .models import Profile, User
 from .forms import UserUpdateForm
 
 
-class AboutMeView(TemplateView):
+class AboutMeView(TemplateView):  # TODO используйте UpdateView вместо TemplateView
     template_name = "myauth/about-me.html"
+    # TODO укажите атрибуты model со значением класса обновляемой модели и fields со значением в виде списка из одного
+    #  элемента - поля avatar в текстовом виде. А также переопределите метод get_object, который возвращает профиль
+    #  текущего пользователя (self.request.user.profile)
 
 
 class RegisterView(CreateView):
@@ -47,11 +50,14 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
         return self.request.user.pk == self.get_object().pk \
             or self.request.user.is_staff
 
-    form_class = UserUpdateForm
-    template_name = 'myauth/user_update_form.html'
-    queryset = User.objects.all()
+    # TODO По заданию требуется: "На странице обновления информации профиля пользователя отображается текущая информация
+    #  профиля, в том числе аватар". Поэтому надо "привязать" представление именно к модели Profile
 
-    def post(self, request: HttpRequest, *args, **kwargs):
+    form_class = UserUpdateForm  # TODO вместо класса формы удобно и достаточно указать атрибут fields со значением двух полей - bio и avatar
+    template_name = 'myauth/user_update_form.html'
+    queryset = User.objects.all()  # TODO в представлении обновления нет такого атрибута, убираем
+
+    def post(self, request: HttpRequest, *args, **kwargs):  # TODO этого не нужно, используем код UpdataView, там всё уже реализовано
         form = UserUpdateForm(data=request.POST, files=request.FILES, instance=self.request.user.profile)
         if form.is_valid():
             form.save()
