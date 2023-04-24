@@ -21,15 +21,7 @@ class ProductCreateViewTestCase(TestCase):
         self.client.login(**self.credentials)
 
     def test_create_product(self):
-        response = self.client.post(
-            reverse("shopapp:product_create"),
-            {
-                "name": "Tablet",
-                "price": "123.43",
-                "description": "qwerty",
-                "discount": "10",
-            }
-        )
+        response = self.client.post(reverse("shopapp:product_create"))
         self.assertEqual(response.status_code, 200)
         # self.assertRedirects(response, reverse("shopapp:products_list"))
 

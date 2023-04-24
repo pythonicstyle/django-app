@@ -5,18 +5,23 @@ from django.shortcuts import reverse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import LogoutView, LoginView
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, View, UpdateView, ListView, DetailView
+from django.views.generic import CreateView, View, UpdateView, ListView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .models import Profile, User
 from .forms import UserUpdateForm
 
 
-class AboutMeView(TemplateView):  # TODO используйте UpdateView вместо TemplateView
+class AboutMeView(UpdateView):
     template_name = "myauth/about-me.html"
-    # TODO укажите атрибуты model со значением класса обновляемой модели и fields со значением в виде списка из одного
-    #  элемента - поля avatar в текстовом виде. А также переопределите метод get_object, который возвращает профиль
-    #  текущего пользователя (self.request.user.profile)
+    model = Profile
+    fields = ['avatar']
+
+    def get_object(self, queryset=None):
+        return self.request.user.profile
+
+    def get_success_url(self):
+        return reverse("myauth:about-me")
 
 
 class RegisterView(CreateView):
@@ -50,18 +55,9 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
         return self.request.user.pk == self.get_object().pk \
             or self.request.user.is_staff
 
-    # TODO По заданию требуется: "На странице обновления информации профиля пользователя отображается текущая информация
-    #  профиля, в том числе аватар". Поэтому надо "привязать" представление именно к модели Profile
-
-    form_class = UserUpdateForm  # TODO вместо класса формы удобно и достаточно указать атрибут fields со значением двух полей - bio и avatar
+    model = Profile
+    fields = ['bio', 'avatar']
     template_name = 'myauth/user_update_form.html'
-    queryset = User.objects.all()  # TODO в представлении обновления нет такого атрибута, убираем
-
-    def post(self, request: HttpRequest, *args, **kwargs):  # TODO этого не нужно, используем код UpdataView, там всё уже реализовано
-        form = UserUpdateForm(data=request.POST, files=request.FILES, instance=self.request.user.profile)
-        if form.is_valid():
-            form.save()
-        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         return reverse("myauth:users_list")
@@ -69,6 +65,7 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
 
 class MyLoginView(LoginView):
     template_name = "myauth/login.html"
+
     redirect_authenticated_user = True
 
 

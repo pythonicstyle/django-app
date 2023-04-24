@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Info about user #{{ user.pk }}</h1>
+    <h1>Info about {% firstof user.first_name user.username %}</h1>
     {% if user.is_authenticated %}
 
         {% if user.profile.avatar %}
@@ -25,10 +25,11 @@
         <h2>Anonymous user</h2>
     {% endif %}
 
-
-    <div>
-        <a href="{% url 'myauth:user-update' pk=user.pk %}">Edit profile #{{ user.pk }}</a>
-    </div>
+    {% if request.user.pk == object.pk or user.is_staff %}
+        <div>
+            <a href="{% url 'myauth:user-update' pk=user.profile.pk %}">Edit profile #{{ user.pk }}</a>
+        </div>
+    {% endif %}
 
     <div>
         <a href="{% url 'myauth:users_list' %}">Back to all users</a>

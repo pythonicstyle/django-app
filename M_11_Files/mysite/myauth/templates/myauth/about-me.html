@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Info about user #{{ user.pk }}</h1>
+    <h1>Info about {% firstof user.first_name user.username %}</h1>
     {% if user.is_authenticated %}
 
         {% if user.profile.avatar %}
@@ -13,10 +13,9 @@
         {% else %}
             No avatar yet
         {% endif %}
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="file" name="avatar">
             <button type="submit">Change avatar</button>
         </form>
         <h2>Details</h2>

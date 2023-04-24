@@ -1,7 +1,7 @@
 {% extends 'myauth/base.html' %}
 
 {% block title %}
-    Users
+    All users
 {% endblock %}
 
 {% block body %}
@@ -10,7 +10,7 @@
         <div>
         {% for user in users %}
             <div>
-                <a href="{% url 'myauth:user-details' pk=user.pk %}">User: {{ user.username }}</a><br>
+                <a href="{% url 'myauth:user-details' pk=user.profile.user_id %}">User: {{ user.username }}</a><br>
                 {% if user.profile.avatar %}
                     <img width="200" src="{{ user.profile.avatar.url }}" alt="{{ user.profile.avatar.name }}">
                 {% else %}

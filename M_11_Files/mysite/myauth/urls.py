@@ -13,7 +13,6 @@ from .views import (
     UserUpdateView,
     UsersListView,
     FooBarView,
-
 )
 
 app_name = "myauth"

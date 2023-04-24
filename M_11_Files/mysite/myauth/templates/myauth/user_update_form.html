@@ -1,11 +1,11 @@
 {% extends 'myauth/base.html' %}
 
 {% block title %}
-    Update user {{ user.username }}
+    Update user {{ profile.user.username }}
 {% endblock %}
 
 {% block body %}
-    <h1>Update info about {{ user.username }}</h1>
+    <h1>Update info about user #{{ profile.user.pk }}</h1>
     <div>
         <form method="post" enctype="multipart/form-data">
 
