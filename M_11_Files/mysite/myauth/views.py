@@ -9,7 +9,6 @@ from django.views.generic import CreateView, View, UpdateView, ListView, DetailV
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 from .models import Profile, User
-from .forms import UserUpdateForm
 
 
 class AboutMeView(UpdateView):
@@ -65,7 +64,6 @@ class UserUpdateView(UserPassesTestMixin, UpdateView):
 
 class MyLoginView(LoginView):
     template_name = "myauth/login.html"
-
     redirect_authenticated_user = True
 
 
