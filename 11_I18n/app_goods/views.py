@@ -5,8 +5,8 @@ from io import StringIO
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from app_goods.forms import UploadPriceFileForm
-from app_goods.models import Item
+from .forms import UploadPriceFileForm
+from .models import Item
 
 
 def item_list(request, *args, **kwargs):

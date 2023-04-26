@@ -6,7 +6,7 @@ from django.test import TestCase
 # Create your tests here.
 from django.urls import reverse
 
-from app_goods.models import Item
+from .models import Item
 
 NUMBER_OF_ITEMS = 10
 

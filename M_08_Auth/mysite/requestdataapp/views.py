@@ -6,8 +6,8 @@ from .forms import UserBioForm, UploadFileForm
 
 
 def process_get_view(request: HttpRequest) -> HttpResponse:
-    a = request.GET.get("a", "")
-    b = request.GET.get("b", "")
+    a = get("a", "")
+    b = get("b", "")
     result = a + b
     context = {
         "a": a,

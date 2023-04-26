@@ -8,12 +8,8 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 
-from app_users.forms import AuthForm, RegisterForm, UserForm, RestorePasswordForm
-
-
-# from app_users.models import Profile
-# from module_9.django_example_source.app_users.forms import UploadFileForm
-from app_users.models import User
+from .forms import AuthForm, RegisterForm, UserForm, RestorePasswordForm
+from .models import User
 
 
 class AnotherLoginView(LoginView):
