@@ -13,11 +13,13 @@ from .views import (
     UserUpdateView,
     UsersListView,
     FooBarView,
+    HelloView,
 )
 
 app_name = "myauth"
 
 urlpatterns = [
+    path("hello/", HelloView.as_view(), name="hello"),
     path("login/", MyLoginView.as_view(), name="login"),
     path("logout/", MyLogoutView.as_view(), name="logout"),
     path("about-me/", AboutMeView.as_view(), name="about-me"),
