@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-05 09:17+0000\n"
+"POT-Creation-Date: 2023-05-05 20:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,11 +33,11 @@ msgstr[1] "{count} товара"
 msgstr[2] "{count} товаров"
 msgstr[3] "{count} товара"
 
-#: mysite/settings.py:122
+#: mysite/settings.py:126
 msgid "English"
 msgstr ""
 
-#: mysite/settings.py:123
+#: mysite/settings.py:127
 msgid "Russian"
 msgstr "Русский"
 
@@ -57,7 +57,29 @@ msgstr "Заказы"
 msgid "order"
 msgstr "Заказ"
 
+#: shopapp/templates/shopapp/product_update_form.html:6
+#: shopapp/templates/shopapp/product_update_form.html:10
+msgid "Update product"
+msgstr "Редактировать товар"
+
+#: shopapp/templates/shopapp/product_update_form.html:22
+msgid ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(product_detail_url)s\"\n"
+"            >Back to product</a>\n"
+"        </div>\n"
+"    "
+msgstr ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(product_detail_url)s\"\n"
+"            >Вернуться к просмотру товара</a>\n"
+"        </div>\n"
+"    "
+
 #: shopapp/templates/shopapp/products-details.html:6
+#: shopapp/templates/shopapp/products-details.html:10
 msgid "Product"
 msgstr "Товар"
 
