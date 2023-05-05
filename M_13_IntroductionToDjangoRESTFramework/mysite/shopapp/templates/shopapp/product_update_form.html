@@ -1,11 +1,13 @@
 {% extends 'shopapp/base.html' %}
 
+{% load i18n %}
+
 {% block title %}
-    Update product
+    {% translate 'Update product' %}
 {% endblock %}
 
 {% block body %}
-    <h1>Update product</h1>
+    <h1>{% translate 'Update product' %}</h1>
     <div>
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -16,8 +18,11 @@
         </form>
     </div>
 
-    <div>
-        <a href="{% url 'shopapp:product_details' pk=object.pk %}"
-        >Back to products #{{ object.pk }}</a>
-    </div>
+    {% url 'shopapp:product_details' pk=object.pk as product_detail_url %}
+    {% blocktranslate %}
+        <div>
+            <a href="{{ product_detail_url }}"
+            >Back to product</a>
+        </div>
+    {% endblocktranslate %}
 {% endblock %}
