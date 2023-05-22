@@ -15,6 +15,8 @@ class ArticlesListView(ListView):
         .select_related("category")
         .select_related("author")
         .prefetch_related("tags")
+        # TODO стоит добавить исключение поля которое не требуется, а ведь оно может содержать большой объем данных:
+        #  .defer('content')
     )
 
 
