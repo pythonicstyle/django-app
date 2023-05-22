@@ -1,0 +1,327 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-05-21 19:11+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: blogapp/models.py:14
+msgid "authors"
+msgstr "авторы"
+
+#: blogapp/models.py:15
+msgid "author"
+msgstr "автор"
+
+#: blogapp/models.py:27
+msgid "Categories"
+msgstr "категории"
+
+#: blogapp/models.py:28 blogapp/templates/blogapp/article_list.html:28
+msgid "Category"
+msgstr "Категория"
+
+#: blogapp/templates/blogapp/article-details.html:13
+#: shopapp/templates/shopapp/products-details.html:16
+msgid "Created by:"
+msgstr "Создано пользователем:"
+
+#: blogapp/templates/blogapp/article-details.html:18
+msgid ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(edit_article_url)s\"\n"
+"            >Edit article</a>\n"
+"        </div>\n"
+"        <div>\n"
+"            <a href=\"%(articles_list_url)s\"\n"
+"            >Back to articles list</a>\n"
+"        </div>\n"
+"    "
+msgstr ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(update_product_url)s\"\n"
+"            >Редактировать статью</a>\n"
+"        </div>\n"
+"        <div>\n"
+"            <a href=\"%(products_list_url)s\"\n"
+"            >Вернуться к списку статей</a>\n"
+"        </div>\n"
+"    "
+
+#: blogapp/templates/blogapp/article_form.html:6
+#: blogapp/templates/blogapp/article_list.html:47
+msgid "Add article"
+msgstr "Добавить статью"
+
+#: blogapp/templates/blogapp/article_form.html:10
+msgid "Create new article"
+msgstr "Создать новую статью"
+
+#: blogapp/templates/blogapp/article_form.html:18
+msgid "Create"
+msgstr "Создать"
+
+#: blogapp/templates/blogapp/article_list.html:6
+msgid "Articles List"
+msgstr "Список статей"
+
+#: blogapp/templates/blogapp/article_list.html:10
+msgid "Articles:"
+msgstr "Статьи:"
+
+#: blogapp/templates/blogapp/article_list.html:13
+msgid "No one article yet"
+msgstr "Пока ни одной статьи нет"
+
+#: blogapp/templates/blogapp/article_list.html:22
+msgid "Created at"
+msgstr "Создано"
+
+#: blogapp/templates/blogapp/article_list.html:25
+msgid "Created by"
+msgstr "Автор"
+
+#: blogapp/templates/blogapp/article_list.html:31
+msgid "Tags:"
+msgstr "Тэги"
+
+#: blogapp/templates/blogapp/article_update_form.html:6
+#: blogapp/templates/blogapp/article_update_form.html:10
+msgid "Edit article"
+msgstr "Редактировать статью"
+
+#: blogapp/templates/blogapp/article_update_form.html:17
+msgid "Update"
+msgstr "Обновить"
+
+#: blogapp/templates/blogapp/article_update_form.html:22
+msgid ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(article_detail_url)s\"\n"
+"            >Back to article</a>\n"
+"        </div>\n"
+"    "
+msgstr ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(product_detail_url)s\"\n"
+"            >Вернуться к статье</a>\n"
+"        </div>\n"
+"    "
+
+#: myauth/models.py:15
+msgid "profiles"
+msgstr "аккаунты"
+
+#: myauth/models.py:16
+msgid "profile"
+msgstr "аккаунт"
+
+#: myauth/views.py:42
+msgid "Hello World"
+msgstr "Привет мир!"
+
+#: myauth/views.py:48
+#, python-brace-format
+msgid "one product"
+msgid_plural "{count} products"
+msgstr[0] "{count} товар"
+msgstr[1] "{count} товара"
+msgstr[2] "{count} товаров"
+msgstr[3] "{count} товара"
+
+#: mysite/settings.py:130
+msgid "English"
+msgstr ""
+
+#: mysite/settings.py:131
+msgid "Russian"
+msgstr "Русский"
+
+#: shopapp/models.py:22
+msgid "products"
+msgstr "товары"
+
+#: shopapp/models.py:23
+msgid "product"
+msgstr "товар"
+
+#: shopapp/models.py:59
+msgid "orders"
+msgstr "заказы"
+
+#: shopapp/models.py:60
+msgid "order"
+msgstr "заказ"
+
+#: shopapp/templates/shopapp/base.html:21
+msgid "Today is"
+msgstr "Сегодня"
+
+#: shopapp/templates/shopapp/base.html:25
+msgid "Time is"
+msgstr "Время:"
+
+#: shopapp/templates/shopapp/product_update_form.html:6
+#: shopapp/templates/shopapp/product_update_form.html:10
+msgid "Update product"
+msgstr "Редактировать товар"
+
+#: shopapp/templates/shopapp/product_update_form.html:22
+#, python-format
+msgid ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(product_detail_url)s\"\n"
+"            >Back to product</a>\n"
+"        </div>\n"
+"    "
+msgstr ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(product_detail_url)s\"\n"
+"            >Вернуться к просмотру товара</a>\n"
+"        </div>\n"
+"    "
+
+#: shopapp/templates/shopapp/products-details.html:6
+#: shopapp/templates/shopapp/products-details.html:10
+msgid "Product"
+msgstr "Товар"
+
+#: shopapp/templates/shopapp/products-details.html:12
+msgid "Description:"
+msgstr "Описание:"
+
+#: shopapp/templates/shopapp/products-details.html:13
+msgid "Price:"
+msgstr "Цена:"
+
+#: shopapp/templates/shopapp/products-details.html:14
+msgid "Discount:"
+msgstr "Скидка:"
+
+#: shopapp/templates/shopapp/products-details.html:15
+msgid "Archived:"
+msgstr "Добавить в архив"
+
+#: shopapp/templates/shopapp/products-details.html:23
+msgid "Images"
+msgstr "Изображения:"
+
+#: shopapp/templates/shopapp/products-details.html:32
+msgid "No images uploaded yet"
+msgstr "Изображений нет"
+
+#: shopapp/templates/shopapp/products-details.html:40
+#, python-format
+msgid ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(update_product_url)s\"\n"
+"            >Update product</a>\n"
+"        </div>\n"
+"        <div>\n"
+"            <a href=\"%(archive_product_url)s\"\n"
+"            >Archive product</a>\n"
+"        </div>\n"
+"        <div>\n"
+"            <a href=\"%(products_list_url)s\"\n"
+"            >Bach to products list</a>\n"
+"        </div>\n"
+"    "
+msgstr ""
+"\n"
+"        <div>\n"
+"            <a href=\"%(update_product_url)s\"\n"
+"            >Редактировать товар</a>\n"
+"        </div>\n"
+"        <div>\n"
+"            <a href=\"%(archive_product_url)s\"\n"
+"            >Добавить в архив</a>\n"
+"        </div>\n"
+"        <div>\n"
+"            <a href=\"%(products_list_url)s\"\n"
+"            >Вернуться к списку товаров</a>\n"
+"        </div>\n"
+"    "
+
+#: shopapp/templates/shopapp/products-list.html:6
+msgid "Products List"
+msgstr "Список товаров"
+
+#: shopapp/templates/shopapp/products-list.html:10
+msgid "Products"
+msgstr "Товары"
+
+#: shopapp/templates/shopapp/products-list.html:16
+msgctxt "product name"
+msgid "Name"
+msgstr "Название"
+
+#: shopapp/templates/shopapp/products-list.html:17
+msgid "Price"
+msgstr "Цена"
+
+#: shopapp/templates/shopapp/products-list.html:18
+msgid "no discount"
+msgstr "нет скидки"
+
+#: shopapp/templates/shopapp/products-list.html:19
+msgid "Discount"
+msgstr "Скидка"
+
+#: shopapp/templates/shopapp/products-list.html:30
+#, python-format
+msgid ""
+"\n"
+"                <a href=\"%(create_product_url)s\"\n"
+"                >Create new product</a>\n"
+"            "
+msgstr ""
+"\n"
+"                <a href=\"%(create_product_url)s\"\n"
+"                >Добавить товар</a>\n"
+"            "
+
+#: shopapp/templates/shopapp/products-list.html:39
+#, python-format
+msgid ""
+"\n"
+"                <h3>No products yet</h3>\n"
+"                <a href=\"%(create_product_url)s\"\n"
+"                >Create a new one</a>\n"
+"            "
+msgstr ""
+"\n"
+"                <h3>Товаров пока нет</h3>\n"
+"                <a href=\"%(create_product_url)s\"\n"
+"                >Создать новый товар</a>\n"
+"            "
+
+#~ msgid "Title"
+#~ msgstr "Заголовок"
+
+#~ msgid "Content"
+#~ msgstr "Содержимое"
+
+#~ msgid "No products yet"
+#~ msgstr "Пока товаров нет"
