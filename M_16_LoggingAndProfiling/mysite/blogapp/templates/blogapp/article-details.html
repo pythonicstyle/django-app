@@ -1,0 +1,29 @@
+{% extends 'blogapp/base.html' %}
+
+{% load i18n %}
+
+{% block title %}
+    {{ article.title }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ article.title }}</h1>
+    <div>
+        <div>{{ article.content }}</div>
+        <div>{% translate 'Created by:' %} <em>{{ article.author }}</em></div>
+    </div>
+    {% url 'blogapp:edit_article' pk=article.pk as edit_article_url %}
+    {% url 'blogapp:articles' as articles_list_url %}
+
+    {% blocktranslate %}
+        <div>
+            <a href="{{ edit_article_url }}"
+            >Edit article</a>
+        </div>
+        <div>
+            <a href="{{ articles_list_url }}"
+            >Back to articles list</a>
+        </div>
+    {% endblocktranslate %}
+
+{% endblock %}
