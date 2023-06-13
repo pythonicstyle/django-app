@@ -1,0 +1,16 @@
+[
+  {
+    "model": "app_housing.type",
+    "pk": 1,
+    "fields": {
+      "name": "Жилое"
+    }
+  },
+  {
+    "model": "app_housing.type",
+    "pk": 2,
+    "fields": {
+      "name": "Коммерческое"
+    }
+  }
+]

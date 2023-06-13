@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
 
     'rest_framework',
     'django_filters',
@@ -209,3 +211,5 @@ LOGGING = {
 INTERNAL_IPS = [
     "127.0.0.1"
 ]
+
+SITE_ID = 1

@@ -1,0 +1,14 @@
+{% extends 'app_housing/base.html' %}
+
+{% block title %}
+    {{ object.name }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ object.name }}</h1>
+    <p>Площадь: {{ object.room_area }} m<sup>2</sup></p>
+    <p>Тип помещения: {{ object.type }}</p>
+    <p>Кол-во комнат: {{ object.rooms.count }}</p>
+    <p>Описание: {{ object.description }}</p>
+    <p>Цена: {{ object.price }} $</p>
+{% endblock %}

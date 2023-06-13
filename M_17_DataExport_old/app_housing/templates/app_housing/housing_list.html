@@ -1,0 +1,19 @@
+{% extends 'app_housing/base.html' %}
+
+{% block title %}
+    Housing list
+{% endblock %}
+
+{% block body %}
+    <h1>Housing</h1>
+    <div>
+        <ul>
+            {% for house in housing %}
+                <p>
+                    <a href="{% url 'house_details' pk=house.pk %}"
+                    >{{ house.name }}</a>
+                </p>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

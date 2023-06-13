@@ -1,0 +1,22 @@
+[
+  {
+    "model": "app_housing.newsitem",
+    "pk": 2,
+    "fields": {
+      "title": "Спортивные новости",
+      "description": "Текст спортивных новостей",
+      "is_published": false,
+      "type": null
+    }
+  },
+  {
+    "model": "app_housing.newsitem",
+    "pk": 3,
+    "fields": {
+      "title": "Политические новости",
+      "description": "Текст политических новостей",
+      "is_published": false,
+      "type": null
+    }
+  }
+]

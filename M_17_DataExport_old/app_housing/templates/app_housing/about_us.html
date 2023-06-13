@@ -1,0 +1,20 @@
+{% extends 'app_housing/base.html' %}
+
+{% block title %}
+    About us
+{% endblock %}
+
+{% block body %}
+    <h1>Info about our company</h1>
+    {% if user.is_authenticated %}
+        <h2>Details</h2>
+        <p>Company: Argo</p>
+        <p>About us: founded in 2020</p>
+    {% else %}
+        <h2>Please log in to view about us info</h2>
+    {% endif %}
+
+<div>
+    <a href="{% url 'housing_list' %}">Back to housing list</a>
+</div>
+{% endblock %}
