@@ -22,7 +22,7 @@ from .models import Profile, User
 from .serialaizers import ProfileSerializer
 
 
-logger = logging.getLogger("main")
+logger = logging.getLogger(__name__)
 
 
 class ProfileViewSet(ModelViewSet):

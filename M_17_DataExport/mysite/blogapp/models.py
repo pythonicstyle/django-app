@@ -62,7 +62,7 @@ class Article(models.Model):
     is_published = models.BooleanField(default=False)
 
     def get_absolute_url(self):
-        return reverse('article', args=[str(self.pk)])
+        return reverse('blogapp:article', kwargs={"pk": self.pk})
 
     def __str__(self):
         return f"{self.title!r}\n{self.author}"

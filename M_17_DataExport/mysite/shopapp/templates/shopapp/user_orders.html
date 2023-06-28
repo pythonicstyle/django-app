@@ -1,0 +1,42 @@
+{% extends 'shopapp/base.html' %}
+
+{% load cache %}
+
+{% block title %}
+    User orders
+{% endblock %}
+
+{% block body %}
+    <h1>Info about {% firstof user.first_name user.username %}'s orders</h1>
+    {% if user.is_authenticated %}
+
+    {% if object_list %}
+        <div>
+        <h2>Details</h2>
+        {% for order in object_list %}
+<!--            {% cache 60 * 3 orders_list user.id %}-->
+            <div>
+                <p><a href="{% url 'shopapp:order_details' pk=order.pk %}"
+                >Order №{{ order.pk }}</a></p>
+            </div>
+<!--            {% endcache %}-->
+        {% endfor %}
+
+        </div>
+    {% else %}
+        <h3>User hasn't made an order yet</h3>
+    {% endif %}
+
+    {% else %}
+        <h2>Anonymous user</h2>
+    {% endif %}
+
+    <div>
+        <a href="{% url 'shopapp:orders_list' %}"
+        >All orders</a>
+    </div>
+    <div>
+        <a href="{% url 'myauth:user-details' pk=user.profile.user_id %}">
+            Info about user {{ user.first_name }}</a><br>
+    </div>
+{% endblock %}

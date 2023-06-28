@@ -10,5 +10,5 @@ class ArticleSitemap(Sitemap):
     def items(self):
         return Article.objects.filter(is_published=True).all()
 
-    def lastmod(self):
-        return Article.pub_data
+    def lastmod(self, obj: Article):
+        return obj.pub_data

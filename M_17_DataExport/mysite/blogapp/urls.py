@@ -6,8 +6,8 @@ from .views import (
     ArticleDetailsView,
     ArticleUpdateView,
     ArticleCreateView,
-    get_articles_in_custom_format,
     ArticleViewSet,
+    LatestArticlesFeed,
 )
 
 app_name = "blogapp"
@@ -18,7 +18,7 @@ routers.register("products", ArticleViewSet)
 urlpatterns = [
     path("articles/", ArticlesListView.as_view(), name="articles"),
     path("article/<int:pk>/", ArticleDetailsView.as_view(), name="article_details"),
+    path("articles/latest/feed/", LatestArticlesFeed(), name="articles-feed"),
     path("article/<int:pk>/edit/", ArticleUpdateView.as_view(), name="edit_article"),
     path("create-article/", ArticleCreateView.as_view(), name="article_create"),
-    # path("", get_articles_in_custom_format, name="articles"),
 ]

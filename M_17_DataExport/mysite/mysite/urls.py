@@ -27,11 +27,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from blogapp.sitemap import ArticleSitemap
-
-sitemaps = {
-    "articles": ArticleSitemap
-}
+from .sitemaps import sitemaps
 
 urlpatterns = [
     path('admin/docs/', include('django.contrib.admindocs.urls')),
@@ -43,7 +39,12 @@ urlpatterns = [
     path('api/', include('myapiapp.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
     path("i18n/", include("django.conf.urls.i18n")),
-    # path("sitemap.xml/", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sitemaps.views.sitemap"),
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name="django.contrib.sitemaps.views",
+    ),
 ]
 
 urlpatterns += i18n_patterns(
@@ -60,4 +61,8 @@ if settings.DEBUG:
 
     urlpatterns.extend(
         static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    )
+
+    urlpatterns.append(
+        path("__debug__/", include("debug_toolbar.urls")),
     )

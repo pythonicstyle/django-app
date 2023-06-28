@@ -32,6 +32,10 @@
     {% endif %}
 
     <div>
-        <a href="{% url 'myauth:users_list' %}">Back to all users</a>
+        <a href="{% url 'myauth:users_list' %}">All users</a>
+    </div>
+    <div>
+        <a href="{% url 'shopapp:user_orders' user_id=user.id %}"
+        >{{ user.first_name }}'s orders</a>
     </div>
 {% endblock %}

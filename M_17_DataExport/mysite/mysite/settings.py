@@ -27,7 +27,23 @@ SECRET_KEY = 'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "0.0.0.0",
+    "127.0.0.1"
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1"
+]
+
+if DEBUG:
+    import socket
+
+    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+    INTERNAL_IPS.append("10.0.2.2")
+    INTERNAL_IPS.extend(
+        [ip[: ip.rfind(".")] + ".1" for ip in ips]
+    )
 
 # Application definition
 
@@ -40,7 +56,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'django.contrib.sitemaps',
-    'django.contrib.sites',
 
     'rest_framework',
     'django_filters',
@@ -100,6 +115,16 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/var/tmp/django_cache",
+    },
+}
+
+CACHE_MIDDLEWARE_SECONDS = 200  # измененное время кэширования (по умолчаню - 10 минут)
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -132,8 +157,8 @@ USE_TZ = True
 USE_L10N = True
 
 LANGUAGES = [
-    ('en', _('English')),
-    ('ru', _('Russian')),
+    ('en', 'English'),
+    ('ru', 'Russian'),
 ]
 
 LOCALE_PATHS = [
@@ -170,6 +195,12 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 
+LOGFILE_NAME = BASE_DIR / "log.txt"
+
+LOGFILE_SIZE = 1024 * 1024
+
+LOGFILE_COUNT = 3
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -194,22 +225,20 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "main_format",
         },
-        "file": {
-            "class": "logging.FileHandler",
-            "formatter": "json_formatter",
-            "filename": "logs.log",
+        "logfile": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": LOGFILE_NAME,
+            "maxBytes": LOGFILE_SIZE,
+            "backupCount": LOGFILE_COUNT,
         },
     },
-    "loggers": {
-        "main": {
-            "level": "INFO",
-            "handlers": ["console", "file"],
-        },
+    "root": {
+        "level": "INFO",
+        "handlers": [
+            "console",
+            "logfile"
+        ],
     },
 }
-
-INTERNAL_IPS = [
-    "127.0.0.1"
-]
 
 SITE_ID = 1

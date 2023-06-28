@@ -1,13 +1,7 @@
 from django.contrib.auth.mixins import UserPassesTestMixin, PermissionRequiredMixin
-from django.core import serializers
-from django.http import (
-    HttpResponse,
-    HttpRequest,
-    HttpResponseBadRequest
-)
-from django.urls import reverse_lazy
+from django.contrib.syndication.views import Feed
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView
-from django.shortcuts import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet
@@ -30,6 +24,7 @@ class ArticlesListView(ListView):
         .select_related("author")
         .prefetch_related("tags")
         .defer('content')
+        .order_by('-pub_data')
     )
 
 
@@ -108,9 +103,33 @@ class ArticleViewSet(ModelViewSet):
     ]
 
 
-def get_articles_in_custom_format(request: HttpRequest) -> HttpResponse:
-    format = request.GET['format']
-    if format not in ['xml', 'json', 'yaml']:
-        return HttpResponseBadRequest()
-    data = serializers.serialize(format, Article.objects.all())
-    return HttpResponse(data)
+# def get_articles_in_custom_format(request: HttpRequest) -> HttpResponse:
+#     format = request.GET['format']
+#     if format not in ['xml', 'json', 'yaml']:
+#         return HttpResponseBadRequest()
+#     data = serializers.serialize(format, Article.objects.all())
+#     return HttpResponse(data)
+
+
+class LatestArticlesFeed(Feed):  # RSS лента
+    """ Представление для отображения ленты новостей """
+
+    title = "Blog articles (latest)"
+    description = "updates on changes and additions blog articles"
+    link = reverse_lazy("blogapp:articles")
+
+    def items(self):  # получение информации о статьях, которые мы хотим отобразить в списке ленты
+        return (
+            Article.objects
+            .filter(is_published=True)
+            .order_by('-pub_data')[:5]  # загрузка последних 5 статей
+        )
+
+    def item_title(self, item: Article):  # метод возвращает заголовок из объекта в списке
+        return item.title
+
+    def item_description(self, item: Article):  # передает информацию о том объекте, о котором вышла статья
+        return item.content[:200]
+
+    def item_link(self, item: Article):  # метод генериркет ссылку, чтобы пользователь мог перейти на сайт по ссылке
+        return reverse("blogapp:article_details", kwargs={"pk": item.pk})

@@ -1,9 +1,10 @@
 """ Разные view для интернет-магазина: по товарам, заказам и т. д. """
-
+from csv import DictWriter
 from timeit import default_timer
 import logging
 
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
+from django.core.cache import cache
 from django.http import (
     HttpResponse,
     HttpRequest,
@@ -11,7 +12,7 @@ from django.http import (
     JsonResponse
 )
 from django.shortcuts import render, redirect, reverse
-from django.views import View
+from django.views import *
 from django.views.generic import (
     ListView,
     DetailView,
@@ -25,17 +26,21 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
     UserPassesTestMixin
 )
+from rest_framework.parsers import MultiPartParser
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 
+from .common import save_scv_products
 from .forms import ProductForm, OrderForm, GroupForm
 from .models import Product, Order, ProductImage
 from .serializers import ProductSerializer, OrderSerializer
 
-
-logger = logging.getLogger("main")
+logger = logging.getLogger(__name__)
 
 
 # @extend_schema(description="Product views CRUD")
@@ -76,6 +81,42 @@ class ProductViewSet(ModelViewSet):
     )
     def retrieve(self, *args, **kwargs):
         return super().retrieve(*args, **kwargs)
+
+    @action(methods=["get"], detail=False)
+    def download_CSV(self, request: Request):
+        response = HttpResponse(content_type="text/csv")
+        filename = "products-export.csv"
+        response["Content-Description"] = f"attachment; filname={filename}"
+        queryset = self.filter_queryset(self.get_queryset())
+        fields = [
+            "name",
+            "description",
+            "price",
+            "discount",
+        ]
+        queryset = queryset.only(*fields)
+        writer = DictWriter(response, fieldnames=fields)
+        writer.writeheader()
+
+        for product in queryset:
+            writer.writerow({
+                field: getattr(product, field)
+                for field in fields
+            })
+        return response
+
+    @action(
+        detail=False,
+        methods=["post"],
+        parser_classes=[MultiPartParser]
+    )
+    def upload_csv(self, request: Request) -> Response:
+        products = save_scv_products(
+            request.FILES["file"].file,
+            encoding=request.encoding,
+        )
+        serializer = self.get_serializer(products, many=True)
+        return Response(serializer.data)
 
 
 class OrderViewSet(ModelViewSet):
@@ -119,6 +160,7 @@ class GroupsListView(View):
     """
     Представление для отображения всех созданных групп
     """
+
     def get(self, request: HttpRequest) -> HttpResponse:
         context = {
             "form": GroupForm(),
@@ -175,6 +217,7 @@ class ProductUpdateView(UserPassesTestMixin, UpdateView):
     Представление для отображения формы по редактированию товара
     Добавлен миксин, проверяющий доступ пользователя к редактированию товара
     """
+
     def test_func(self):
         return self.request.user == self.get_object().created_by \
             and self.request.user.has_perm("shopapp.change_product") \
@@ -254,7 +297,7 @@ class OrderCreateView(CreateView):
         return super().get(request, **kwargs)
 
 
-class OrderUpdeteView(UserPassesTestMixin, UpdateView):
+class OrderUpdateView(UserPassesTestMixin, UpdateView):
     """
     Представление для отображения формы редактирования товара
     Добавлен миксин, проверяющий статус модератора сайта
@@ -305,17 +348,21 @@ class ProductsDataExportView(View):
     """ Представление для выгрузки всех товаров в отдельный файл """
 
     def get(self, request: HttpRequest) -> JsonResponse:
-        products = Product.objects.order_by("pk").all()
-        products_data = [
-            {
-                "pk": product.pk,
-                "name": product.name,
-                "price": product.price,
-                "archived": product.archived,
-                "created by": product.created_by_id,
-            }
-            for product in products
-        ]
+        cache_key = "products_data_export"
+        products_data = cache.get(cache_key)
+        if products_data is None:
+            products = Product.objects.order_by("pk").all()
+            products_data = [
+                {
+                    "pk": product.pk,
+                    "name": product.name,
+                    "price": product.price,
+                    "archived": product.archived,
+                    "created by": product.created_by_id,
+                }
+                for product in products
+            ]
+            cache.set(cache_key, products_data, 60 * 5)
         return JsonResponse({"products": products_data})
 
 
@@ -341,3 +388,51 @@ class OrdersDataExportView(UserPassesTestMixin, View):
             for order in orders
         ]
         return JsonResponse({"orders": orders_data})
+
+
+class UserOrdersListView(ListView):
+    template_name = "shopapp/user_orders.html"
+    queryset = (
+        Order.objects
+        .select_related("user")
+        .prefetch_related("products")
+        # .all()
+    )
+
+    def get_queryset(self):
+        self.owner = User.objects.get(pk=self.kwargs["user_id"])
+        print(self.owner)
+        return Order.objects.filter(user=self.owner).order_by("created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_name"] = self.owner
+        return context
+
+
+class UserOrdersDataExportView(UserPassesTestMixin, View):
+    """
+    Представление для выгрузки всех заказов пользователя в отдельный JSON-файл
+    Добавлен миксин, проверяющий статус модератора сайта
+    """
+
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        self.owner = None
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get_queryset(self):
+        self.owner = User.objects.get(pk=self.kwargs["user_id"])
+        return Order.objects.filter(user=self.owner).order_by("pk")
+
+    def get(self, *args, **kwargs) -> JsonResponse:
+        cache_key = "user_orders"
+        user_orders_data = cache.get(cache_key)
+        if user_orders_data is None:
+            user_orders_data = [
+                OrderSerializer(self.queryset, many=True).data
+            ]
+            cache.set(cache_key, user_orders_data, 60 * 3)
+        return JsonResponse({"user_orders": user_orders_data})
