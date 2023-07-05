@@ -1,0 +1,16 @@
+[
+  {
+    "model": "blogapp.category",
+    "pk": 1,
+    "fields": {
+      "name": "devices"
+    }
+  },
+  {
+    "model": "blogapp.category",
+    "pk": 2,
+    "fields": {
+      "name": "smartphones"
+    }
+  }
+]
