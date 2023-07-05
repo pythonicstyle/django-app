@@ -11,7 +11,7 @@ from django.http import (
     HttpResponseRedirect,
     JsonResponse
 )
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import *
 from django.views.generic import (
     ListView,
@@ -376,37 +376,51 @@ class OrdersDataExportView(UserPassesTestMixin, View):
         return self.request.user.is_staff
 
     def get(self, request: HttpRequest) -> JsonResponse:
-        orders = Order.objects.order_by("pk").all()
-        orders_data = [
-            {
-                "pk": order.pk,
-                "delivery_address": order.delivery_address,
-                "promocode": order.promocode,
-                "user": order.user_id,
-                "products": [product.pk for product in order.products.all()],
-            }
-            for order in orders
-        ]
+        cache_key = "orders_data_export"
+        orders_data = cache.get(cache_key)
+        if orders_data is None:
+            orders = Order.objects.order_by("pk").all()
+            orders_data = [
+                {
+                    "pk": order.pk,
+                    "delivery_address": order.delivery_address,
+                    "promocode": order.promocode,
+                    "user": order.user_id,
+                    "products": [product.pk for product in order.products.all()],
+                }
+                for order in orders
+            ]
+            cache.set(cache_key, orders_data, 60 * 5)
+
         return JsonResponse({"orders": orders_data})
 
 
-class UserOrdersListView(ListView):
+class UserOrdersListView(UserPassesTestMixin, ListView):
+    """
+    Представление для отображения списка заказов пользователя
+    Добавлен миксин, проверяющий авторизован ли пользователь
+    """
+
     template_name = "shopapp/user_orders.html"
-    queryset = (
-        Order.objects
-        .select_related("user")
-        .prefetch_related("products")
-        # .all()
-    )
+
+    def test_func(self):
+        return self.request.user.is_authenticated
 
     def get_queryset(self):
         self.owner = User.objects.get(pk=self.kwargs["user_id"])
-        print(self.owner)
-        return Order.objects.filter(user=self.owner).order_by("created_at")
+        self.user_orders = Order.objects\
+            .filter(user=self.owner.id) \
+            .order_by("created_at") \
+            .all()
+
+        for order in self.user_orders:
+            print(order.pk)
+        return self.user_orders
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_name"] = self.owner
+        context["owner"] = self.owner
+        context["user_orders_qs"] = self.user_orders
         return context
 
 
@@ -415,10 +429,6 @@ class UserOrdersDataExportView(UserPassesTestMixin, View):
     Представление для выгрузки всех заказов пользователя в отдельный JSON-файл
     Добавлен миксин, проверяющий статус модератора сайта
     """
-
-    def __init__(self, **kwargs):
-        super().__init__(kwargs)
-        self.owner = None
 
     def test_func(self):
         return self.request.user.is_staff
@@ -432,7 +442,7 @@ class UserOrdersDataExportView(UserPassesTestMixin, View):
         user_orders_data = cache.get(cache_key)
         if user_orders_data is None:
             user_orders_data = [
-                OrderSerializer(self.queryset, many=True).data
+                OrderSerializer(self.get_queryset(), many=True).data
             ]
             cache.set(cache_key, user_orders_data, 60 * 3)
         return JsonResponse({"user_orders": user_orders_data})

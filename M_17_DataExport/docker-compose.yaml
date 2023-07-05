@@ -1,20 +1,24 @@
 version: "3.9"
 
 services:
-  app :
+  app:
     build:
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     command:
-      - "python"
-      - "manage.py"
-      - "runserver"
-      - "0.0.0.0:8080"
+      - gunicorn
+      - mysite.wsgi:application
+      - --bind
+      - "0.0.0.0:8000"
     ports:
-      - "8000:8080"
+      - "8000:8000"
+    env_file:
+      - .env
     logging:
       driver: loki
       options:
         loki-url: http://host.docker.internal:3100/loki/api/v1/push
+    volumes:
+      - ./mysite/database:app/database
 
   grafana:
     image: grafana/grafana:9.2.15

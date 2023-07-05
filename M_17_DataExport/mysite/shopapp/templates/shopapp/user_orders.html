@@ -3,29 +3,29 @@
 {% load cache %}
 
 {% block title %}
-    User orders
+    User #{{ owner.id }} orders
 {% endblock %}
 
 {% block body %}
-    <h1>Info about {% firstof user.first_name user.username %}'s orders</h1>
-    {% if user.is_authenticated %}
+    <h1>Info about {% firstof owner.first_name owner.username %}'s orders</h1>
+    {% if owner.is_authenticated %}
 
-    {% if object_list %}
-        <div>
-        <h2>Details</h2>
-        {% for order in object_list %}
-<!--            {% cache 60 * 3 orders_list user.id %}-->
+        {% if user_orders_qs %}
             <div>
-                <p><a href="{% url 'shopapp:order_details' pk=order.pk %}"
-                >Order №{{ order.pk }}</a></p>
-            </div>
-<!--            {% endcache %}-->
-        {% endfor %}
+            <h2>Order history</h2>
+            {% for user_order in user_orders_qs %}
+                {% cache 60 * 3 orders_list owner.id %}
+                <div>
+                    <p><a href="{% url 'shopapp:order_details' pk=user_order.pk %}"
+                    >Order №{{ user_order.pk }}</a></p>
+                </div>
+                {% endcache %}
+            {% endfor %}
 
-        </div>
-    {% else %}
-        <h3>User hasn't made an order yet</h3>
-    {% endif %}
+            </div>
+        {% else %}
+            <h3>User hasn't made an order yet</h3>
+        {% endif %}
 
     {% else %}
         <h2>Anonymous user</h2>
@@ -36,7 +36,7 @@
         >All orders</a>
     </div>
     <div>
-        <a href="{% url 'myauth:user-details' pk=user.profile.user_id %}">
-            Info about user {{ user.first_name }}</a><br>
+        <a href="{% url 'myauth:user-details' pk=owner.profile.user_id %}">
+            Info about user {{ owner.first_name }}</a><br>
     </div>
 {% endblock %}

@@ -65,3 +65,6 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     products = models.ManyToManyField(Product, related_name="orders")
     receipt = models.FileField(null=True, upload_to="orders/receipts")
+
+    # def get_total_cost(self):
+    #     return sum(item.get_cost() for item in self.items.all())

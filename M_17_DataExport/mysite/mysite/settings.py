@@ -9,27 +9,35 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+from os import getenv
 from pathlib import Path
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
 from pythonjsonlogger.jsonlogger import JsonFormatter
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DATABASE_DIR = BASE_DIR / "database"
+DATABASE_DIR.mkdir(exist_ok=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja'
+# SECRET_KEY = getenv(
+#     'DJANGO_SECRET_KEY',
+#     'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja'
+# )
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
+
 DEBUG = True
 
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1"
+# ] + getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 ]
 
 INTERNAL_IPS = [
@@ -99,7 +107,6 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
         },
-
     },
 ]
 
@@ -117,8 +124,10 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
-        "LOCATION": "/var/tmp/django_cache",
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+
+        # "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        # "LOCATION": "/var/tmp/django_cache",
     },
 }
 
@@ -201,6 +210,8 @@ LOGFILE_SIZE = 1024 * 1024
 
 LOGFILE_COUNT = 3
 
+LOGLEVEL = getenv("DJANGO_LOGLEVEL", "info").upper()
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -220,7 +231,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "DEBUG",
+            "level": LOGLEVEL,
             "filters": ["require_debug_true"],
             "class": "logging.StreamHandler",
             "formatter": "main_format",
