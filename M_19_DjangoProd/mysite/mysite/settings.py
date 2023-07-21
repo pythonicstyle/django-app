@@ -23,26 +23,27 @@ DATABASE_DIR.mkdir(exist_ok=True)
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja'
-# SECRET_KEY = getenv(
-#     'DJANGO_SECRET_KEY',
-#     'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja'
-# )
+# SECRET_KEY = 'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja'
+SECRET_KEY = getenv(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
-# DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
+# DEBUG = True
+DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
 
 
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1"
-    # ] + getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
-]
+    ] + getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+# ]
 
 INTERNAL_IPS = [
-    "127.0.0.1"
+    "127.0.0.1",
+    "0.0.0.0",
 ]
 
 if DEBUG:
@@ -119,8 +120,8 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # 'NAME': DATABASE_DIR/ 'db.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DATABASE_DIR/ 'db.sqlite3',
     }
 }
 
