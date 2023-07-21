@@ -9,7 +9,7 @@ from django.http import (
     HttpResponse,
     HttpRequest,
     HttpResponseRedirect,
-    JsonResponse, Http404
+    JsonResponse
 )
 from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.views import *
@@ -407,16 +407,14 @@ class UserOrdersListView(UserPassesTestMixin, ListView):
         return self.request.user.is_authenticated
 
     def get_queryset(self):
-        try:
-            self.owner = User.objects.get(pk=self.kwargs["user_id"])
-        except Exception:
-            raise Http404("User not found")
-
-        self.user_orders = Order.objects \
+        self.owner = User.objects.get(pk=self.kwargs["user_id"])
+        self.user_orders = Order.objects\
             .filter(user=self.owner.id) \
-            .select_related("user") \
-            .order_by("created_at")
+            .order_by("created_at") \
+            .all()
 
+        for order in self.user_orders:
+            print(order.pk)
         return self.user_orders
 
     def get_context_data(self, **kwargs):
@@ -436,12 +434,8 @@ class UserOrdersDataExportView(UserPassesTestMixin, View):
         return self.request.user.is_staff
 
     def get_queryset(self):
-        self.owner = get_object_or_404(User, pk=self.kwargs["user_id"])
-        return Order.objects \
-            .select_related("user") \
-            .prefetch_related("products") \
-            .filter(user=self.owner) \
-            .order_by("pk")
+        self.owner = User.objects.get(pk=self.kwargs["user_id"])
+        return Order.objects.filter(user=self.owner).order_by("pk")
 
     def get(self, *args, **kwargs) -> JsonResponse:
         cache_key = "user_orders"
