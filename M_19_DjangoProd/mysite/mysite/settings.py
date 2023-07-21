@@ -30,14 +30,15 @@ SECRET_KEY = 'django-insecure-qf*u3&q9l9jn(@=g3y8@17s4c8ko&3em9w__z28ya7gh$+4^ja
 # )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
 
 DEBUG = True
+# DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
+
 
 ALLOWED_HOSTS = [
     "0.0.0.0",
     "127.0.0.1"
-# ] + getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+    # ] + getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
 ]
 
 INTERNAL_IPS = [
@@ -119,6 +120,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        # 'NAME': DATABASE_DIR/ 'db.sqlite3',
     }
 }
 
@@ -132,7 +134,6 @@ CACHES = {
 }
 
 CACHE_MIDDLEWARE_SECONDS = 200  # измененное время кэширования (по умолчаню - 10 минут)
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -217,7 +218,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "main_format": {
-            "format": "{asctime} - {levelname} - {module} - {message}",
+            "format": "%{asctime}s - %{levelname}s - [%(name)s:%(lineo)s] %{module}s - %{message}s",
             "style": "{",
         },
         "json_formatter": {

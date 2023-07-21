@@ -25,9 +25,9 @@ class ProductForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"cols": 30, "rows": 5}),
         }
 
-    # images = forms.ImageField(
-    #     widget=forms.ClearableFileInput(attrs={"multiple": True}),
-    # )
+    images = forms.ImageField(
+        widget=forms.ClearableFileInput(attrs={"multiple": True}),
+    )
 
 
 class OrderForm(forms.ModelForm):
