@@ -1,0 +1,11 @@
+{% extends 'app_housing/base.html' %}
+
+{% block title %}
+    {{ object.title }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ object.title }}</h1>
+    <p>Текст статьи: {{ object.description }}</p>
+    <p>Тип новости: {{ object.type }}</p>
+{% endblock %}

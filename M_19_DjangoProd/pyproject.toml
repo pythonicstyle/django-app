@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "mysite"
+version = "0.1.0"
+description = ""
+authors = ["Anton Garanin <antongaranin78@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "4.2.0"
+djangorestframework = "^3.14.0"
+docutils = "^0.20.1"
+drf-spectacular = "^0.26.3"
+flake8 = "^6.0.0"
+django-filter = "^23.2"
+django-debug-toolbar = "^4.1.0"
+pillow = "^10.0.0"
+gunicorn = "^21.2.0"
+inflection = "^0.5.1"
+jsonschema = "^4.18.4"
+pycodestyle = "^2.10.0"
+pytz = "^2023.3"
+pyyaml = "^6.0.1"
+sqlparse = "^0.4.4"
+uritemplate = "^4.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,30 @@
+[
+  {
+    "model": "blogapp.tag",
+    "pk": 1,
+    "fields": {
+      "name": "smartphone"
+    }
+  },
+  {
+    "model": "blogapp.tag",
+    "pk": 2,
+    "fields": {
+      "name": "laptop"
+    }
+  },
+  {
+    "model": "blogapp.tag",
+    "pk": 3,
+    "fields": {
+      "name": "desktop"
+    }
+  },
+  {
+    "model": "blogapp.tag",
+    "pk": 4,
+    "fields": {
+      "name": "tablet"
+    }
+  }
+]

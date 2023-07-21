@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+      {% block title %}
+        Base Title
+      {% endblock %}
+    </title>
+</head>
+<body>
+
+{% block body %}
+  <h1>Base body</h1>
+{% endblock %}
+
+
+<div>
+    <h2>Contacts:</h2>
+    <p>Phone: +7999333333</p>
+    <p>Email: house@help.com</p>
+    <p>Address: Tsentralnaya st, Moscow</p>
+</div>
+<div>
+    <a href="{% url 'about_us' %}">About us</a>
+</div>
+
+</body>
+</html>

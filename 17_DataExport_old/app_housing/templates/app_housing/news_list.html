@@ -1,0 +1,19 @@
+{% extends 'app_housing/base.html' %}
+
+{% block title %}
+    News list
+{% endblock %}
+
+{% block body %}
+    <h1>News</h1>
+    <div>
+        <ul>
+            {% for obj in news %}
+                <p>
+                    <a href="{% url 'news-item' pk=obj.pk %}"
+                    >{{ obj.title }}</a>
+                </p>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

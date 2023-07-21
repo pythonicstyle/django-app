@@ -1,0 +1,46 @@
+[
+  {
+    "model": "blogapp.article",
+    "pk": 1,
+    "fields": {
+      "title": "Laptop vs desktop",
+      "content": "some info will be here",
+      "pub_data": "2023-05-21T16:16:38.339Z",
+      "author": 1,
+      "category": 1,
+      "tags": [
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "blogapp.article",
+    "pk": 2,
+    "fields": {
+      "title": "Best smartphone in 2023",
+      "content": "Smart and powerful",
+      "pub_data": "2023-05-21T19:39:54.387Z",
+      "author": 1,
+      "category": 2,
+      "tags": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "blogapp.article",
+    "pk": 3,
+    "fields": {
+      "title": "smartphone is better!",
+      "content": "differences between tablet and smartphone",
+      "pub_data": "2023-05-22T10:31:54.261Z",
+      "author": 1,
+      "category": 2,
+      "tags": [
+        1,
+        4
+      ]
+    }
+  }
+]

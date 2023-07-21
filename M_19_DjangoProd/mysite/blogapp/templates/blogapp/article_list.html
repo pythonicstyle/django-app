@@ -1,0 +1,50 @@
+{% extends 'blogapp/base.html' %}
+
+{% load i18n %}
+
+{% block title %}
+    {% translate 'Articles List' %}
+{% endblock %}
+
+{% block body %}
+    <h1>{% translate 'Articles:' %}</h1>
+    <div>
+    {% if not articles %}
+        <h3>{% translate 'No one article yet' %}</h3>
+    {% else %}
+        <ul>
+            {% for article in articles %}
+                <li>
+                    <a href="{% url 'blogapp:article_details' pk=article.pk %}"
+                    >{{ article.title }}</a>
+                </li>
+                <li>
+                    {% translate 'Created at' %} <b>{{ article.pub_data }}</b>
+                </li>
+                <li>
+                    {% translate 'Created by' %} <b>{{ article.author }}</b>
+                </li>
+                <li>
+                    {% translate 'Category' %} <b>{{ article.category }}</b>
+                </li>
+            <div>
+                {% translate 'Tags:' %}
+            </div>
+            <ul>
+                {% for tag in article.tags.all %}
+                    <li>{{ tag.name }}</li>
+                {% endfor %}
+            </ul>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <a href="{% url 'blogapp:article_create' %}"
+            >{% translate 'Add article' %}</a>
+        </form>
+    </div>
+{% endblock %}

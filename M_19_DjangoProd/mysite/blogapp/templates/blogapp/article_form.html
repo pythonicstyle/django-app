@@ -1,0 +1,30 @@
+{% extends 'blogapp/base.html' %}
+
+{% load i18n %}
+
+{% block title %}
+    {% translate 'Add article' %}
+{% endblock %}
+
+{% block body %}
+    <h1>{% translate 'Create new article' %}</h1>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <button type="submit">
+                {% translate 'Create' %}
+            </button>
+        </form>
+    </div>
+
+    <div>
+        {% url 'blogapp:articles' as articles_list_url %}
+        {% blocktranslate %}
+            <a href="{{ articles_list_url }}"
+            >Back to articles list</a>
+        {% endblocktranslate %}
+    </div>
+{% endblock %}

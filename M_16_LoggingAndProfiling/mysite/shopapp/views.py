@@ -1,0 +1,343 @@
+""" Разные view для интернет-магазина: по товарам, заказам и т. д. """
+
+from timeit import default_timer
+import logging
+
+from django.contrib.auth.models import Group
+from django.http import (
+    HttpResponse,
+    HttpRequest,
+    HttpResponseRedirect,
+    JsonResponse
+)
+from django.shortcuts import render, redirect, reverse
+from django.views import View
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView
+)
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UserPassesTestMixin
+)
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+
+from .forms import ProductForm, OrderForm, GroupForm
+from .models import Product, Order, ProductImage
+from .serializers import ProductSerializer, OrderSerializer
+
+
+logger = logging.getLogger("main")
+
+
+# @extend_schema(description="Product views CRUD")
+class ProductViewSet(ModelViewSet):
+    """
+    Набор представлений для действий над Product
+    Полный CRUD для сущностей товара
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [
+        SearchFilter,
+        DjangoFilterBackend,
+        OrderingFilter,
+    ]
+    search_fields = ["name", "description"]
+    filterset_fields = [
+        "name",
+        "description",
+        "price",
+        "discount",
+        "archived",
+        "created_by",
+    ]
+    ordering_fields = [
+        "name",
+        "price",
+        "discount",
+    ]
+
+    @extend_schema(
+        summary="Get one product by ID",
+        description="Retrieves **product**, returns 404 if not found",
+        responses={
+            200: ProductSerializer,
+            404: OpenApiResponse(description="Empty response, product by ID not found"),
+        }
+    )
+    def retrieve(self, *args, **kwargs):
+        return super().retrieve(*args, **kwargs)
+
+
+class OrderViewSet(ModelViewSet):
+    """
+    Набор представлений для действий над Order
+    Полный CRUD для сущностей товара
+    """
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [
+        SearchFilter,
+        DjangoFilterBackend,
+        OrderingFilter,
+    ]
+    filterset_fields = [
+        "delivery_address",
+        "promocode",
+        "user",
+    ]
+    ordering_fields = [
+        "created_at",
+        "delivery_address",
+    ]
+
+
+class ShopIndexView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+        products = [
+            ('Laptop', 1999),
+            ('Desktop', 2999),
+            ('Smartphone', 999),
+        ]
+        context = {
+            "time_running": default_timer(),
+            "products": products,
+        }
+        return render(request, 'shopapp/shop-index.html', context=context)
+
+
+class GroupsListView(View):
+    """
+    Представление для отображения всех созданных групп
+    """
+    def get(self, request: HttpRequest) -> HttpResponse:
+        context = {
+            "form": GroupForm(),
+            "groups": Group.objects.prefetch_related('permissions').all(),
+        }
+        return render(request, 'shopapp/groups-list.html', context=context)
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+        return redirect(request.path)
+
+
+class ProductDetailsView(DetailView):
+    """ Представление для детального отображения товара """
+
+    template_name = "shopapp/products-details.html"
+    queryset = Product.objects.prefetch_related("images")
+    context_object_name = "product"
+
+
+class ProductsListView(ListView):
+    """ Представление для отображения списка товаров """
+
+    template_name = "shopapp/products-list.html"
+    context_object_name = "products"
+    queryset = Product.objects.filter(archived=False)
+
+    def get(self, request, **kwargs):
+        logger.info("Запрошена страница со списком товаров")
+        return super().get(request, **kwargs)
+
+
+class ProductCreateView(PermissionRequiredMixin, CreateView):
+    """
+    Представление для отображения формы по созданию нового товара
+    Добавлен миксин, проверяющие право пользователя на добавление товара
+    """
+    permission_required = "shopapp.add_product"
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy("shopapp:products_list")
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        logger.info(f"Пользователь {form.instance.created_by} создал новый продукт")
+        return super().form_valid(form)
+
+
+class ProductUpdateView(UserPassesTestMixin, UpdateView):
+    """
+    Представление для отображения формы по редактированию товара
+    Добавлен миксин, проверяющий доступ пользователя к редактированию товара
+    """
+    def test_func(self):
+        return self.request.user == self.get_object().created_by \
+            and self.request.user.has_perm("shopapp.change_product") \
+            or self.request.user.is_superuser
+
+    model = Product
+    form_class = ProductForm
+    template_name_suffix = "_update_form"
+
+    def get_success_url(self):
+        return reverse(
+            "shopapp:product_details",
+            kwargs={"pk": self.object.pk},
+        )
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        for image in form.files.getlist("images"):
+            ProductImage.objects.create(
+                product=self.object,
+                image=image,
+            )
+        return response
+
+
+class ProductArchiveView(DeleteView):
+    """ Представление для отображения формы подтверждения добавления товара в архив """
+
+    model = Product
+    success_url = reverse_lazy("shopapp:products_list")
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.archived = True
+        self.object.save()
+        logger.info(f"Товар был добавлен в архив пользователем {self.request.user}")
+        return HttpResponseRedirect(success_url)
+
+
+class OrdersListView(LoginRequiredMixin, ListView):
+    """
+    Представление для отображения списка заказов
+    Добавлкен миксин, проверяющий авторизован ли пользователь
+    """
+
+    queryset = (
+        Order.objects
+        .select_related("user")
+        .prefetch_related("products")
+    )
+    template_name = "shopapp/orders_list.html"
+
+
+class OrderDetailsView(PermissionRequiredMixin, DetailView):
+    """
+    Представление для детального отображения заказа
+    Добавлен миксин, проверяющий доступ пользователя к просмотру заказов
+    """
+    permission_required = "view_order"
+    template_name = "shopapp/order_details.html"
+    queryset = (
+        Order.objects
+        .select_related("user")
+        .prefetch_related("products")
+    )
+
+
+class OrderCreateView(CreateView):
+    """ Представление для отображения формы для создания нового заказа """
+
+    model = Order
+    form_class = OrderForm
+    success_url = reverse_lazy("shopapp:orders_list")
+
+    def post(self, request, **kwargs):
+        logger.info(f"{self.request.user} создал новый заказ")
+        return super().get(request, **kwargs)
+
+
+class OrderUpdeteView(UserPassesTestMixin, UpdateView):
+    """
+    Представление для отображения формы редактирования товара
+    Добавлен миксин, проверяющий статус модератора сайта
+    и сравнивающий пользователя с автором заказа
+    """
+
+    def test_func(self):
+        return self.request.user == self.get_object().created_by \
+            and self.request.user.has_perm("shopapp.change_order") \
+            or self.request.user.is_superuser
+
+    model = Order
+    form_class = OrderForm
+    template_name_suffix = "_update_form"
+
+    def get_success_url(self):
+        return reverse(
+            "shopapp:order_details",
+            kwargs={"pk": self.object.pk},
+        )
+
+
+class OrderDeleteView(UserPassesTestMixin, DeleteView):
+    """
+    Представление для отображения формы подтверждения удаления заказа
+    Добавлен миксин, проверяющий статус модератора сайта
+    и сравнивающий пользователя с автором заказа
+
+    """
+
+    def test_func(self):
+        return self.request.user == self.get_object().created_by \
+            and self.request.user.has_perm("shopapp.delete_order") \
+            or self.request.user.is_superuser
+
+    model = Order
+    success_url = reverse_lazy("shopapp:orders_list")
+
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+        self.object.delete()
+        logger.info(f"Заказ {self.request.pk} был удален пользователем {self.request.user}")
+
+        return HttpResponseRedirect(success_url)
+
+
+class ProductsDataExportView(View):
+    """ Представление для выгрузки всех товаров в отдельный файл """
+
+    def get(self, request: HttpRequest) -> JsonResponse:
+        products = Product.objects.order_by("pk").all()
+        products_data = [
+            {
+                "pk": product.pk,
+                "name": product.name,
+                "price": product.price,
+                "archived": product.archived,
+                "created by": product.created_by_id,
+            }
+            for product in products
+        ]
+        return JsonResponse({"products": products_data})
+
+
+class OrdersDataExportView(UserPassesTestMixin, View):
+    """
+    Представление для выгрузки всех заказов в отдельный файл
+    Добавлен миксин, проверяющий статус модератора сайта
+    """
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request: HttpRequest) -> JsonResponse:
+        orders = Order.objects.order_by("pk").all()
+        orders_data = [
+            {
+                "pk": order.pk,
+                "delivery_address": order.delivery_address,
+                "promocode": order.promocode,
+                "user": order.user_id,
+                "products": [product.pk for product in order.products.all()],
+            }
+            for order in orders
+        ]
+        return JsonResponse({"orders": orders_data})

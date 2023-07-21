@@ -1,0 +1,3 @@
+Watching for file changes with StatReloader
+/Users/antongaranin/PycharmProjects/pythonProject/django/M_19_DjangoProd/mysite/mysite/settings.py changed, reloading.
+Watching for file changes with StatReloader
