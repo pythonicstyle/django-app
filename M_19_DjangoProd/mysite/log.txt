@@ -104,3 +104,15 @@ Not Found: /media/products/product_2/preview/desktop.jpeg
 Not Found: /media/products/product_None/preview/desktop_ultra.jpeg
 /Users/antongaranin/PycharmProjects/pythonProject/django/M_19_DjangoProd/mysite/mysite/settings.py changed, reloading.
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Запрошена страница со списком товаров
+Not Found: /media/products/product_None/preview/desktop_ultra.jpeg
+Not Found: /media/products/product_2/preview/desktop.jpeg
+Not Found: /favicon.ico
+Запрошена страница со списком товаров
+Not Found: /media/products/product_None/preview/desktop_ultra.jpeg
+Not Found: /media/products/product_2/preview/desktop.jpeg
+Not Found: /media/products/product_2/preview/desktop.jpeg
+Not Found: /media/products/product_2/preview/desktop.jpeg
+Watching for file changes with StatReloader
+Запрошена страница со списком товаров

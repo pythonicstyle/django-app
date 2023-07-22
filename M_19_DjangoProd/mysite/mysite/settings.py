@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from os import getenv
 from pathlib import Path
 from django.urls import reverse_lazy
-from pythonjsonlogger.jsonlogger import JsonFormatter
+# from pythonjsonlogger.jsonlogger import JsonFormatter
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,8 +31,8 @@ SECRET_KEY = getenv(
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-# DEBUG = True
-DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
+DEBUG = True
+# DEBUG = getenv("DJANGO_DEBUG", "0") == "1"
 
 
 ALLOWED_HOSTS = [
@@ -222,9 +222,9 @@ LOGGING = {
             "format": "%{asctime}s - %{levelname}s - [%(name)s:%(lineo)s] %{module}s - %{message}s",
             "style": "{",
         },
-        "json_formatter": {
-            "()": JsonFormatter,
-        },
+        # "json_formatter": {
+        #     "()": JsonFormatter,
+        # },
     },
     "filters": {
         "require_debug_true": {
