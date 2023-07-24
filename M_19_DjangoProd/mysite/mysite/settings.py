@@ -13,6 +13,12 @@ from os import getenv
 from pathlib import Path
 from django.urls import reverse_lazy
 # from pythonjsonlogger.jsonlogger import JsonFormatter
+import sentry_sdk
+
+sentry_sdk.init(
+  dsn="https://e7cd088a9a7142268c3c931e063ff4fe@o4505579329748992.ingest.sentry.io/4505579331649536",
+  traces_sample_rate=1.0,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,7 +56,7 @@ if DEBUG:
     import socket
 
     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-    INTERNAL_IPS.append("10.0.2.2")
+    INTERNAL_IPS.append("10.0.2.2")  # внутренний адрес docker
     INTERNAL_IPS.extend(
         [ip[: ip.rfind(".")] + ".1" for ip in ips]
     )
@@ -121,7 +127,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-        # 'NAME': DATABASE_DIR/ 'db.sqlite3',
+        # 'NAME': DATABASE_DIR / 'db.sqlite3',
     }
 }
 
