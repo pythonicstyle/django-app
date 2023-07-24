@@ -337,3 +337,9 @@ Traceback (most recent call last):
   File "/Users/antongaranin/PycharmProjects/pythonProject/django/venv/lib/python3.11/site-packages/django/template/base.py", line 568, in invalid_block_tag
     raise self.error(
 django.template.exceptions.TemplateSyntaxError: Invalid block tag on line 13: 'endblock'. Did you forget to register or load this tag?
+Watching for file changes with StatReloader
+Запрошена страница со списком товаров
+Method Not Allowed: /ru/shop/api/products/upload_csv/
+Method Not Allowed: /ru/shop/api/products/upload_csv/
+Not Found: /ru/shop/api/products/import_csv/
+Запрошена страница со списком товаров
